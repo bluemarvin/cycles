@@ -77,7 +77,7 @@ function addGrid(scene) {
   scene.add(mesh);
 
   function setWall(list, offset, b1, b2) { // , height) {
-    var height = 50
+    var height = 10
     var v1 = { x: b1.x, y: 0,      z: b1.y };
     var v2 = { x: b1.x, y: height, z: b1.y };
     var v3 = { x: b2.x, y: height, z: b2.y };

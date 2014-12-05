@@ -1,159 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>three.js webgl - loaders - OBJ MTL loader</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				font-family: Monospace;
-				background-color: #000;
-				color: #fff;
-				margin: 0px;
-				overflow: hidden;
-			}
-			#info {
-				color: #fff;
-				position: absolute;
-				top: 10px;
-				width: 100%;
-				text-align: center;
-				z-index: 100;
-				display:block;
-			}
-			#info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
-		</style>
-	</head>
+  <head>
+    <title>Lightcycle Test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      body {
+        font-family: Monospace;
+        background-color: #000;
+        color: #fff;
+        margin: 0px;
+        overflow: hidden;
+      }
+      #info {
+        color: #fff;
+        position: absolute;
+        top: 10px;
+        width: 100%;
+        text-align: center;
+        z-index: 100;
+        display:block;
+      }
+      #info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
+    </style>
+  </head>
 
-	<body>
-		<div id="info">
-		Lightcycle Test
-		</div>
+  <body>
+    <div id="info">
+    Lightcycle Test
+    </div>
 
-		<script src="3rdparty/three.min.js"></script>
-		<script src="3rdparty/MTLLoader.js"></script>
-		<script src="3rdparty/OBJMTLLoader.js"></script>
-		<script src="js/grid.js"></script>
+    <script src="3rdparty/three.min.js"></script>
+    <script src="3rdparty/MTLLoader.js"></script>
+    <script src="3rdparty/OBJMTLLoader.js"></script>
+    <script src="js/grid.js"></script>
+    <script src="js/controller.js"></script>
 <!--
-		<script src="js/Detector.js"></script>
-		<script src="js/libs/stats.min.js"></script>
+    <script src="js/Detector.js"></script>
+    <script src="js/libs/stats.min.js"></script>
 -->
 
-		<script>
+<script>
 
-			var container;
+var container;
 
-			var camera, scene, renderer;
+var camera, scene, renderer;
 
-			var mouseX = 0, mouseY = 0;
+var windowHalfX = window.innerWidth / 2;
+var windowHalfY = window.innerHeight / 2;
+var heading = 0;
+var lasttimer = Date.now () * 0.001;
 
-			var windowHalfX = window.innerWidth / 2;
-			var windowHalfY = window.innerHeight / 2;
-
-
-			init();
-			animate();
-
-
-			function init() {
-
-				container = document.createElement( 'div' );
-				document.body.appendChild( container );
-
-				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-				camera.position.z = -10;
-				camera.position.x = -10;
-				camera.position.y = 5;
-
-				// scene
-
-				scene = new THREE.Scene();
-
-				var ambient = new THREE.AmbientLight( 0x888888 );
-				scene.add( ambient );
-
-				var directionalLight = new THREE.DirectionalLight( 0x888888 );
-				directionalLight.position.set( 1, 1, -1 ).normalize();
-				scene.add( directionalLight );
-
-				// model
-            addGrid(scene);
-
-				var onProgress = function ( xhr ) {
-					if ( xhr.lengthComputable ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round(percentComplete, 2) + '% downloaded' );
-					}
-				};
-
-				var onError = function ( xhr ) {
-				};
+init();
+animate();
 
 
-            var offset = -3;
-            function addObject(obj) {
-               obj.position.x += offset;
-               obj.position.z -= offset;
-               offset += 2;
-					scene.add(obj);
-            }
-				var loader = new THREE.OBJMTLLoader();
-				loader.load( 'assets/cycle.obj', 'assets/blue.mtl', addObject, onProgress, onError );
-				loader.load( 'assets/cycle.obj', 'assets/red.mtl', addObject, onProgress, onError );
-				loader.load( 'assets/cycle.obj', 'assets/yellow.mtl', addObject, onProgress, onError );
-				loader.load( 'assets/cycle.obj', 'assets/orange.mtl', addObject, onProgress, onError );
+function init() {
 
-				//
+  container = document.createElement('div');
+  document.body.appendChild(container);
 
-				renderer = new THREE.WebGLRenderer();
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				container.appendChild( renderer.domElement );
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+  camera.position.z = 20;
+  camera.position.x = 0;
+  camera.position.y = 4;
 
-				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+  scene = new THREE.Scene();
 
-				//
+  var ambient = new THREE.AmbientLight(0x888888);
+  scene.add(ambient);
 
-				window.addEventListener( 'resize', onWindowResize, false );
+  var directionalLight = new THREE.DirectionalLight(0x888888);
+  directionalLight.position.set(1, 1, -1).normalize();
+  scene.add(directionalLight);
 
-			}
+  addGrid(scene);
 
-			function onWindowResize() {
+  var onProgress = function (xhr) {
+    if (xhr.lengthComputable) {
+      var percentComplete = xhr.loaded / xhr.total * 100;
+      console.log(Math.round(percentComplete, 2) + '% downloaded');
+    }
+  };
 
-				windowHalfX = window.innerWidth / 2;
-				windowHalfY = window.innerHeight / 2;
+  var onError = function (xhr) {
+  };
 
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
 
-				renderer.setSize( window.innerWidth, window.innerHeight );
+  var offset = -3;
+  function addObject(obj) {
+    obj.position.x += offset;
+    obj.position.z -= offset;
+    offset += 2;
+    scene.add(obj);
+  }
+  var loader = new THREE.OBJMTLLoader();
+  loader.load('assets/cycle.obj', 'assets/blue.mtl', addObject, onProgress, onError);
+  loader.load('assets/cycle.obj', 'assets/red.mtl', addObject, onProgress, onError);
+  loader.load('assets/cycle.obj', 'assets/yellow.mtl', addObject, onProgress, onError);
+  loader.load('assets/cycle.obj', 'assets/orange.mtl', addObject, onProgress, onError);
 
-			}
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  container.appendChild(renderer.domElement);
 
-			function onDocumentMouseMove( event ) {
+  window.addEventListener('resize', onWindowResize, false);
+}
 
-//				mouseX = ( event.clientX - windowHalfX ) / 2;
-//				mouseY = ( event.clientY - windowHalfY ) / 2;
+function onWindowResize() {
 
-			}
+  windowHalfX = window.innerWidth / 2;
+  windowHalfY = window.innerHeight / 2;
 
-			//
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
 
-			function animate() {
+  renderer.setSize(window.innerWidth, window.innerHeight);
 
-				requestAnimationFrame( animate );
-				render();
+}
 
-			}
+function animate() {
+  requestAnimationFrame(animate);
+  render();
+}
 
-			function render() {
+function render() {
+  var timer = Date.now () * 0.001
+    , delta = timer - lasttimer
+    , TwoPi = 3.14159265 * 2
+    , Speed = 6
+    ;
+  pollController();
+  // Move the camera
+  heading -= (TwoPi / 3) * delta * getAxis(3);
+  if (heading > TwoPi) { heading -= TwoPi; }
+  else if (heading < -TwoPi) { heading += TwoPi; }
+  camera.rotation.y = heading;
+  camera.position.x -= delta * ((-Math.cos (TwoPi - heading) * getAxis(1)) + (-Math.sin (heading) * getAxis(4))) * Speed;
+  camera.position.y -= delta * getAxis(2) * Speed;
+  camera.position.z -= delta * ((-Math.sin (TwoPi - heading) * getAxis(1)) + (-Math.cos (heading) * getAxis(4))) * Speed;
+  lasttimer = timer;
 
-				camera.lookAt( new THREE.Vector3(0,0,0) );
+  renderer.render(scene, camera);
+}
 
-				renderer.render( scene, camera );
-
-			}
-
-		</script>
-
-	</body>
+</script>
+  </body>
 </html>
