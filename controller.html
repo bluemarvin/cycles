@@ -11,55 +11,33 @@
   <body>
   <div id="info">No Gamepads Detected</div>
 <script>
-var gamepads = null;
-var gcount = 0;
 var info = document.getElementById('info');
-
-function gamepadHandler(event, connecting) {
-  var gamepad = event.gamepad;
-
-  if (connecting) {
-    if (!gamepads) {
-      gamepads = [];
-    }
-console.log("Adding controller");
-    gamepads[gamepad.index] = gamepad;
-    gcount++;
-  } else {
-    delete gamepads[gamepad.index];
-    gcount--;
-    if (gcount <= 0) {
-      gamepads = [];
-    }
-console.log("Removing controller");
-  }
-}
-
-window.addEventListener("gamepadconnected", function(e) { gamepadHandler(e, true); }, false);
-window.addEventListener("gamepaddisconnected", function(e) { gamepadHandler(e, false); }, false);
 
 animate();
 
 function animate() {
   requestAnimationFrame(animate);
 
-  var lpads = gamepads;
-
-  if (!lpads) {
-    lpads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
-  }
+  var lpads = navigator.getGamepads ?
+    navigator.getGamepads() :
+    (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
 
   var str = "";
 
   for (var pad = 0; pad < lpads.length; pad++) {
-    str = str + '<b>Gamepad ' + pad + '</b><br>';
     var gp = lpads[pad];
     if (gp) {
+      str = str + '<b>Gamepad: ' + '"' + pad + '" ' +
+        'mapping: "' + gp.mapping + '"<br>'+
+        'id: "' + gp.id + '"</b><br>';
       for (var which = 0; which < gp.axes.length; which++) {
-        str = str + '&nbsp;a[' + which + ']:' + (gp.axes[which] > 0 ? '&nbsp;' : '')+ gp.axes[which] + '<br>';
+        str = str + '&nbsp;a[' + which + ']:' +
+          (gp.axes[which] > 0 ? '&nbsp;' : '')+ gp.axes[which] + '<br>';
       }
       for (var which = 0; which < gp.buttons.length; which++) {
-        str = str + '&nbsp;b[' + which + ']:' + (which < 10 ? '&nbsp;' : '') + (gp.buttons[which].pressed ? "ON&nbsp;&nbsp;" : "OFF&nbsp;") + gp.buttons[which].value + '<br>';
+        str = str + '&nbsp;b[' + which + ']:' + (which < 10 ? '&nbsp;' : '') +
+          (gp.buttons[which].pressed ? "ON&nbsp;&nbsp;" : "OFF&nbsp;") +
+          gp.buttons[which].value + '<br>';
       }
     }
   }
