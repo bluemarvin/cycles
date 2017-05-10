@@ -171,9 +171,9 @@ function render() {
 }
 
 window.addEventListener ("keydown", function (e) {
-console.log("keyCode="+e.keyCode);
+  // keyCode 70 == 'f'
   if (e.keyCode == 70) {
-console.log("FULLSCREEN?");
+console.log("FULLSCREEN");
     document.body.mozRequestFullScreen();
   }
 }, false);
