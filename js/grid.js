@@ -68,36 +68,47 @@ function addGrid(scene) {
   var geometry = new THREE.BufferGeometry();
   geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
   geometry.addAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-  var texture = THREE.ImageUtils.loadTexture( 'assets/grid2.png' );
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  //          texture.anisotropy = renderer.getMaxAnisotropy();
-  var material = new THREE.MeshBasicMaterial( { map: texture } );
-  var mesh = new THREE.Mesh(geometry, material);
-  scene.add(mesh);
 
-  function setWall(list, offset, b1, b2) { // , height) {
-    var height = 10
-    var v1 = { x: b1.x, y: 0,      z: b1.y };
-    var v2 = { x: b1.x, y: height, z: b1.y };
-    var v3 = { x: b2.x, y: height, z: b2.y };
-    var v4 = { x: b2.x, y: 0,      z: b2.y };
-    setVertex(list, offset, v1);
-    setVertex(list, offset + 3, v2);
-    setVertex(list, offset + 6, v3);
-    setVertex(list, offset + 9, v1);
-    setVertex(list, offset + 12, v3);
-    setVertex(list, offset + 15, v4);
+  var loader = new THREE.TextureLoader();
+
+  function createWall(texture) {
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    //          texture.anisotropy = renderer.getMaxAnisotropy();
+    var material = new THREE.MeshBasicMaterial( { map: texture } );
+    var mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    function setWall(list, offset, b1, b2) { // , height) {
+      var height = 10
+      var v1 = { x: b1.x, y: 0,      z: b1.y };
+      var v2 = { x: b1.x, y: height, z: b1.y };
+      var v3 = { x: b2.x, y: height, z: b2.y };
+      var v4 = { x: b2.x, y: 0,      z: b2.y };
+      setVertex(list, offset, v1);
+      setVertex(list, offset + 3, v2);
+      setVertex(list, offset + 6, v3);
+      setVertex(list, offset + 9, v1);
+      setVertex(list, offset + 12, v3);
+      setVertex(list, offset + 15, v4);
+    }
+
+    var wall = new Float32Array(4 * ValuesPerQuad);
+    setWall(wall, 0, { x: minGrid, y: maxGrid }, { x: maxGrid, y: maxGrid })
+    setWall(wall, ValuesPerQuad, { x: maxGrid, y: minGrid }, { x: minGrid, y: minGrid })
+    setWall(wall, ValuesPerQuad * 2, { x: minGrid, y: minGrid }, { x: minGrid, y: maxGrid })
+    setWall(wall, ValuesPerQuad * 3, { x: maxGrid, y: maxGrid }, { x: maxGrid, y: minGrid })
+    geometry = new THREE.BufferGeometry();
+    geometry.addAttribute('position', new THREE.BufferAttribute(wall, 3));
+    material = new THREE.MeshBasicMaterial( { color: 0x666666 } );
+    mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
   }
 
-  var wall = new Float32Array(4 * ValuesPerQuad);
-  setWall(wall, 0, { x: minGrid, y: maxGrid }, { x: maxGrid, y: maxGrid })
-  setWall(wall, ValuesPerQuad, { x: maxGrid, y: minGrid }, { x: minGrid, y: minGrid })
-  setWall(wall, ValuesPerQuad * 2, { x: minGrid, y: minGrid }, { x: minGrid, y: maxGrid })
-  setWall(wall, ValuesPerQuad * 3, { x: maxGrid, y: maxGrid }, { x: maxGrid, y: minGrid })
-  geometry = new THREE.BufferGeometry();
-  geometry.addAttribute('position', new THREE.BufferAttribute(wall, 3));
-  material = new THREE.MeshBasicMaterial( { color: 0x666666 } );
-  mesh = new THREE.Mesh(geometry, material);
-  scene.add(mesh);
+  loader.load('assets/grid2.png',
+    function(texture) { createWall(texture); },
+	 function(xhr) { console.log( (xhr.loaded / xhr.total * 100) + '% loaded' ); },
+	 function ( xhr ) { console.log( 'An error happened' ); }
+  );
+
 }

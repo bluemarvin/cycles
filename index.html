@@ -32,17 +32,19 @@
 
     <script src="3rdparty/three.min.js"></script>
     <script src="3rdparty/MTLLoader.js"></script>
-    <script src="3rdparty/OBJMTLLoader.js"></script>
+    <script src="3rdparty/OBJLoader2.js"></script>
+    <script src="3rdparty/stats.min.js"></script>
     <script src="js/grid.js"></script>
     <script src="js/controller.js"></script>
 <!--
     <script src="js/Detector.js"></script>
-    <script src="js/libs/stats.min.js"></script>
 -->
 
 <script>
 
 var container;
+
+var stats;
 
 var camera, scene, renderer;
 
@@ -59,6 +61,8 @@ function init() {
 
   container = document.createElement('div');
   document.body.appendChild(container);
+  stats = new Stats();
+  container.appendChild(stats.dom);
 
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
   camera.position.z = 20;
@@ -76,6 +80,8 @@ function init() {
 
   addGrid(scene);
 
+  var mtlLoader = new THREE.MTLLoader();
+
   var onProgress = function (xhr) {
     if (xhr.lengthComputable) {
       var percentComplete = xhr.loaded / xhr.total * 100;
@@ -86,7 +92,6 @@ function init() {
   var onError = function (xhr) {
   };
 
-
   var offset = -3;
   function addObject(obj) {
     obj.position.x += offset;
@@ -94,11 +99,31 @@ function init() {
     offset += 2;
     scene.add(obj);
   }
-  var loader = new THREE.OBJMTLLoader();
-  loader.load('assets/cycle.obj', 'assets/blue.mtl', addObject, onProgress, onError);
-  loader.load('assets/cycle.obj', 'assets/red.mtl', addObject, onProgress, onError);
-  loader.load('assets/cycle.obj', 'assets/yellow.mtl', addObject, onProgress, onError);
-  loader.load('assets/cycle.obj', 'assets/orange.mtl', addObject, onProgress, onError);
+
+  mtlLoader.load('assets/blue.mtl', function(materials) {
+    var objLoader = new THREE.OBJLoader2();
+    materials.preload();
+    objLoader.setMaterials(materials.materials);
+    objLoader.load('assets/cycle.obj', addObject, onProgress, onError);
+  });
+  mtlLoader.load('assets/red.mtl', function(materials) {
+    var objLoader = new THREE.OBJLoader2();
+    materials.preload();
+    objLoader.setMaterials(materials.materials);
+    objLoader.load('assets/cycle.obj', addObject, onProgress, onError);
+  });
+  mtlLoader.load('assets/yellow.mtl', function(materials) {
+    var objLoader = new THREE.OBJLoader2();
+    materials.preload();
+    objLoader.setMaterials(materials.materials);
+    objLoader.load('assets/cycle.obj', addObject, onProgress, onError);
+  });
+  mtlLoader.load('assets/orange.mtl', function(materials) {
+    var objLoader = new THREE.OBJLoader2();
+    materials.preload();
+    objLoader.setMaterials(materials.materials);
+    objLoader.load('assets/cycle.obj', addObject, onProgress, onError);
+  });
 
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -122,6 +147,7 @@ function onWindowResize() {
 function animate() {
   requestAnimationFrame(animate);
   render();
+  stats.update();
 }
 
 function render() {
@@ -143,6 +169,14 @@ function render() {
 
   renderer.render(scene, camera);
 }
+
+window.addEventListener ("keydown", function (e) {
+console.log("keyCode="+e.keyCode);
+  if (e.keyCode == 70) {
+console.log("FULLSCREEN?");
+    document.body.mozRequestFullScreen();
+  }
+}, false);
 
 </script>
   </body>
