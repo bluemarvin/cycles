@@ -171,10 +171,14 @@ function render() {
 }
 
 window.addEventListener ("keydown", function (e) {
-  // keyCode 70 == 'f'
+  // keyCode 70 == 'f'A
+console.log("keyCode="+e.keyCode);
   if (e.keyCode == 70) {
 console.log("FULLSCREEN");
-    document.body.mozRequestFullScreen();
+    if (renderer && renderer.domElement) {
+      renderer.domElement.mozRequestFullScreen();
+    }
+    //document.body.mozRequestFullScreen();
   }
 }, false);
 
