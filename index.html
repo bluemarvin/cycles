@@ -21,13 +21,25 @@
         z-index: 100;
         display:block;
       }
-      #info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
+      #fullscreen {
+        color: #000;
+        background-color: #999;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        text-align: center;
+        z-index: 100;
+        display:block;
+      }
     </style>
   </head>
 
   <body>
     <div id="info">
     Lightcycle Test
+    </div>
+    <div id="fullscreen">
+      <button onclick="toggleFullscreen(renderer?renderer.domElement:null)">Fullscreen</button>
     </div>
 
     <script src="3rdparty/three.min.js"></script>
@@ -36,10 +48,7 @@
     <script src="3rdparty/stats.min.js"></script>
     <script src="js/grid.js"></script>
     <script src="js/controller.js"></script>
-<!--
-    <script src="js/Detector.js"></script>
--->
-
+    <script src="js/fullscreen.js"></script>
 <script>
 
 var container;
@@ -167,6 +176,10 @@ function render() {
   camera.position.z -= delta * ((-Math.sin (TwoPi - heading) * getAxis(1)) + (-Math.cos (heading) * getAxis(4))) * Speed;
   lasttimer = timer;
 
+  if (getButtonPressed(0)) {
+    toggleFullscreen(renderer.domElement);
+  }
+
   renderer.render(scene, camera);
 }
 
@@ -174,28 +187,10 @@ window.addEventListener ("keydown", function (e) {
   // keyCode 70 == 'f'
 console.log("keyCode="+e.keyCode);
   if (e.keyCode == 70) {
-    if (renderer && renderer.domElement) {
-      if (document.fullscreen || document.webkitIsFullScreen) {
-        if (document.exitFullscreen) {
-console.log("standard EXIT FULLSCREEN");
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-console.log("WebKit EXIT FULLSCREEN");
-          document.webkitExitFullscreen();
-        } else {
-console.log("No EXIT FULLSCREEN FOUND");
-        }
-      } else if (renderer.domElement.requestFullscreen) {
-console.log("standard FULLSCREEN");
-        renderer.domElement.requestFullscreen();
-      } else if (renderer.domElement.webkitRequestFullScreen) {
-console.log("WebKit FULLSCREEN");
-        renderer.domElement.webkitRequestFullScreen();
-      } else {
-console.log("No FULLSCREEN FOUND");
-      }
-      e.preventDefault();
+    if (renderer) {
+      toggleFullscreen(renderer.domElement);
     }
+    e.preventDefault();
   }
 }, false);
 

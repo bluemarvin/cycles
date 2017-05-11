@@ -1,5 +1,6 @@
 var getAxis;
 var getButton;
+var getButtonPressed;
 var pollController;
 
 
@@ -23,7 +24,8 @@ window.addEventListener("gamepadconnected", function(e) { gamepadHandler(e, true
 window.addEventListener("gamepaddisconnected", function(e) { gamepadHandler(e, false); }, false);
 
 var axes = [];
-var button = [];
+var buttonsPrev = []
+var buttons = [];
 
 var ACode = 65
   , DCode = 68
@@ -70,7 +72,10 @@ pollController = function () {
   axes[3] = ks[leftkey] + ks[rightkey];
   axes[4] = -(ks[upkey] + ks[downkey]);
 
-  var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+  buttonsPrev = buttons;
+  buttons = [];
+
+  var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
 
   for (var pad = 0; pad < gamepads.length; pad++) {
     var gp = gamepads[pad];
@@ -89,6 +94,7 @@ pollController = function () {
       }
       str = str + " b:"
       for (var which = 0; which < gp.buttons.length; which++) {
+        buttons[which] = gp.buttons[which].value;
         str = str + ' ' + which + ':' + gp.buttons[which].value;
       }
       console.log(str);
@@ -109,10 +115,26 @@ getAxis = function (index) {
 getButton = function (index) {
   var result = 0;
 
-  if (index < button.length) {
-    result = button[index];
+  if (index < buttons.length) {
+    result = buttons[index];
   }
   return result;
+};
+
+getButtonPressed = function (index) {
+  var isPressed = false
+    , wasPressed = false
+    ;
+
+  if (index < buttons.length) {
+    isPressed = buttons[index] != 0;
+  }
+
+  if (index < buttonsPrev.length) {
+    wasPressed = buttonsPrev[index] != 0;
+  }
+
+  return isPressed && !wasPressed;
 };
 
 window.addEventListener ("keydown", function (e) {
