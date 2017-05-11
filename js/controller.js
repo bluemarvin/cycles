@@ -117,27 +117,27 @@ getButton = function (index) {
 
 window.addEventListener ("keydown", function (e) {
   switch (e.keyCode) {
-    case ACode: ks[akey] = -1; break;
-    case DCode: ks[dkey] = 1; break;
-    case WCode: ks[wkey] = -1; break;
-    case SCode: ks[skey] = 1; break;
-    case LeftArrow: ks[leftkey] = -1; break;
-    case RightArrow: ks[rightkey] = 1; break;
-    case UpArrow: ks[upkey] = 1; break;
-    case DownArrow: ks[downkey] = -1; break;
+    case ACode: ks[akey] = -1; e.preventDefault(); break;
+    case DCode: ks[dkey] = 1; e.preventDefault(); break;
+    case WCode: ks[wkey] = -1; e.preventDefault(); break;
+    case SCode: ks[skey] = 1; e.preventDefault(); break;
+    case LeftArrow: ks[leftkey] = -1; e.preventDefault(); break;
+    case RightArrow: ks[rightkey] = 1; e.preventDefault(); break;
+    case UpArrow: ks[upkey] = 1; e.preventDefault(); break;
+    case DownArrow: ks[downkey] = -1; e.preventDefault(); break;
   }
 }, false);
 
 window.addEventListener ("keyup", function (e) {
   switch (e.keyCode) {
-    case ACode: ks[akey] = 0; break;
-    case DCode: ks[dkey] = 0; break;
-    case WCode: ks[wkey] = 0; break;
-    case SCode: ks[skey] = 0; break;
-    case LeftArrow: ks[leftkey] = 0; break;
-    case RightArrow: ks[rightkey] = 0; break;
-    case UpArrow: ks[upkey] = 0; break;
-    case DownArrow: ks[downkey] = 0; break;
+    case ACode: ks[akey] = 0; e.preventDefault(); break;
+    case DCode: ks[dkey] = 0; e.preventDefault(); break;
+    case WCode: ks[wkey] = 0; e.preventDefault(); break;
+    case SCode: ks[skey] = 0; e.preventDefault(); break;
+    case LeftArrow: ks[leftkey] = 0; e.preventDefault(); break;
+    case RightArrow: ks[rightkey] = 0; e.preventDefault(); break;
+    case UpArrow: ks[upkey] = 0; e.preventDefault(); break;
+    case DownArrow: ks[downkey] = 0; e.preventDefault(); break;
   }
 }, false);
 

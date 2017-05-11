@@ -171,14 +171,31 @@ function render() {
 }
 
 window.addEventListener ("keydown", function (e) {
-  // keyCode 70 == 'f'A
+  // keyCode 70 == 'f'
 console.log("keyCode="+e.keyCode);
   if (e.keyCode == 70) {
-console.log("FULLSCREEN");
     if (renderer && renderer.domElement) {
-      renderer.domElement.mozRequestFullScreen();
+      if (document.fullscreen || document.webkitIsFullScreen) {
+        if (document.exitFullscreen) {
+console.log("standard EXIT FULLSCREEN");
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+console.log("WebKit EXIT FULLSCREEN");
+          document.webkitExitFullscreen();
+        } else {
+console.log("No EXIT FULLSCREEN FOUND");
+        }
+      } else if (renderer.domElement.requestFullscreen) {
+console.log("standard FULLSCREEN");
+        renderer.domElement.requestFullscreen();
+      } else if (renderer.domElement.webkitRequestFullScreen) {
+console.log("WebKit FULLSCREEN");
+        renderer.domElement.webkitRequestFullScreen();
+      } else {
+console.log("No FULLSCREEN FOUND");
+      }
+      e.preventDefault();
     }
-    //document.body.mozRequestFullScreen();
   }
 }, false);
 
