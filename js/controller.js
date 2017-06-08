@@ -83,19 +83,20 @@ pollController = function () {
       var str = "a:"
       for (var which = 0; which < gp.axes.length; which++) {
         var value = clamp(gp.axes[which]);
-        str = str + ' ' + which + ':' + (value != 0 ? '1' : '0');
-        if (which >= axes.length) {
-           axes[which] = value;
+        str = str + ' ' + which + ':' + value; // (value != 0 ? '1' : '0');
+        axisId = which + 1;
+        if (axisId >= axes.length) {
+           axes[axisId] = value;
         }
-        else if (((axes[which] >= 0) && (value > axes[which])) ||
-            ((axes[which] <= 0) && (value < axes[which]))) {
-          axes[which] = value;
+        else if (((axes[axisId] >= 0) && (value > axes[axisId])) ||
+            ((axes[axisId] <= 0) && (value < axes[axisId]))) {
+          axes[axisId] = value;
         }
       }
-      str = str + " b:"
+//      str = str + " b:"
       for (var which = 0; which < gp.buttons.length; which++) {
         buttons[which] = gp.buttons[which].value;
-        str = str + ' ' + which + ':' + gp.buttons[which].value;
+//        str = str + ' ' + which + ':' + gp.buttons[which].value;
       }
       console.log(str);
     }
