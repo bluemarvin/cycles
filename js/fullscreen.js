@@ -13,6 +13,9 @@ console.log("No EXIT FULLSCREEN FOUND");
     if (element.requestFullscreen) {
 console.log("standard FULLSCREEN");
       element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+console.log("Moz FULLSCREEN");
+        element.mozRequestFullScreen();
     } else if (element.webkitRequestFullScreen) {
 console.log("WebKit FULLSCREEN");
         element.webkitRequestFullScreen();
