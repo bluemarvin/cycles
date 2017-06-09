@@ -1,7 +1,5 @@
-var updateFPS
-  , renderFPS
-  , windowResizeFPS
-  ;
+var FPSOverlay = {};
+
 (function () {
 
 const kScale = 0.5
@@ -71,7 +69,7 @@ function onLoad(texture) {
   updatePosition();
 }
 
-initFPS = function (THREE) {
+FPSOverlay.init = function (THREE) {
   var width = window.innerWidth;
   var height = window.innerHeight;
   mCamera = new THREE.OrthographicCamera(-width/2, width/2, height/2, -height/2, 0, 30 );
@@ -79,7 +77,7 @@ initFPS = function (THREE) {
   var texture = new THREE.TextureLoader().load('assets/digits.png', onLoad);
 };
 
-updateFPS = function (renderer) {
+FPSOverlay.update = function (renderer) {
   if (!mIsLoaded) {
     return;
   }
@@ -106,8 +104,6 @@ updateFPS = function (renderer) {
   renderer.render(scene, mCamera);
 };
 
-windowResizeFPS = function () {
-  updatePosition();
-}
+FPSOverlay.windowResize = updatePosition;
 
 })();

@@ -136,20 +136,20 @@ function init() {
 
   window.addEventListener('resize', onWindowResize, false);
 
-  initFPS(THREE);
+  FPSOverlay.init(THREE);
 }
 
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
-  windowResizeFPS();
+  FPSOverlay.windowResize();
 }
 
 function animate() {
   requestAnimationFrame(animate);
   render();
-  updateFPS(renderer);
+  FPSOverlay.update(renderer);
 }
 
 function render() {
