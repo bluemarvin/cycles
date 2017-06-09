@@ -69,12 +69,15 @@ function onLoad(texture) {
   updatePosition();
 }
 
-FPSOverlay.init = function (THREE) {
+FPSOverlay.init = function (THREE, digitsFile) {
+  if (digitsFile == undefined) {
+    digitsFile = 'assets/digits.png';
+  }
   var width = window.innerWidth;
   var height = window.innerHeight;
   mCamera = new THREE.OrthographicCamera(-width/2, width/2, height/2, -height/2, 0, 30 );
   scene = new THREE.Scene();
-  var texture = new THREE.TextureLoader().load('assets/digits.png', onLoad);
+  var texture = new THREE.TextureLoader().load(digitsFile, onLoad);
 };
 
 FPSOverlay.update = function (renderer) {
